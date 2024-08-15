@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -9,7 +9,9 @@ export default function Home() {
             Unlimited movies, TV shows, and more
           </h1>
           <p className="text-2xl font-[400]">Watch anywhere. Cancel anytime.</p>
-          <button className="btn-danger w-[250px]"> Get Started</button>
+          <Link href="/register">
+            <button className="btn-danger w-[250px]"> Get Started</button>
+          </Link>
         </div>
       </div>
     </main>
