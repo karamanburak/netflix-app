@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import GoogleIcon from "/public/icons/GoogleIcon";
-import useAuthCall from "@/hooks/useAuthCall";
+import useAuthCalls from "@/hooks/useAuthCalls";
 
 const Register = () => {
   const [info, setInfo] = useState({
@@ -10,7 +10,7 @@ const Register = () => {
     email: "",
     password: "",
   });
-  const { createUser } = useAuthCall();
+  const { createUser } = useAuthCalls();
 
   const { email, password, firstName, lastName } = info;
 
