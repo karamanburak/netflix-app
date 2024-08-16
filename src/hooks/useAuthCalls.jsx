@@ -3,8 +3,11 @@ import { toastErrorNotify, toastSuccessNotify } from "@/helpers/ToastNotify";
 import { login, logout } from "@/redux/features/authSlice";
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
   updateProfile,
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
@@ -48,18 +51,50 @@ const useAuthCalls = () => {
     }
   };
 
+  const logOut = () => {
+    signOut(auth);
+    toastSuccessNotify("Logged out successfully");
+    router.push("/");
+  };
+
   const userObserver = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const { email, displayName, photoURL } = user;
         dispatch(login({ email, displayName, photoURL }));
+        sessionStorage.setItem(
+          "user",
+          JSON.stringify({ email, displayName, photoURL })
+        );
       } else {
         dispatch(logout());
+        sessionStorage.removeItem("user");
       }
     });
   };
 
-  return { createUser, signIn, userObserver };
+  //* https://console.firebase.google.com/
+  //* => Authentication => sign-in-method => enable Google
+  //! Google ile girişi enable yap
+  //* => Authentication => settings => Authorized domains => add domain
+  //! Projeyi deploy ettikten sonra google sign-in çalışması için domain listesine deploy linkini ekle
+  const signUpProvider = () => {
+    //? Google ile giriş yapılması için kullanılan firebase metodu
+    const provider = new GoogleAuthProvider();
+    //? Açılır pencere ile giriş yapılması için kullanılan firebase metodu
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        console.log(result);
+        router.push("/profile");
+        toastSuccessNotify("Logged in successfully");
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        console.log(error);
+      });
+  };
+
+  return { createUser, signIn, userObserver, logOut, signUpProvider };
 };
 
 export default useAuthCalls;
