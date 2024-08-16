@@ -1,4 +1,8 @@
-import { getMovieDetail, getVideoKey } from "@/helpers/movieFunctions";
+import {
+  getMovieDetail,
+  getMovies,
+  getVideoKey,
+} from "@/helpers/movieFunctions";
 import React from "react";
 import VideoSection from "../components/VideoSection";
 import { BackspaceIcon } from "@heroicons/react/24/solid";
@@ -28,3 +32,23 @@ const MovieDetail = async ({ params: { movieId } }) => {
 };
 
 export default MovieDetail;
+
+export async function generateStaticParams() {
+  const [movies1, movies2, movies3, movies4] = await Promise.all([
+    getMovies("now_playing"),
+    getMovies("popular"),
+    getMovies("top_rated"),
+    getMovies("upcoming"),
+  ]);
+  return [...movies1, ...movies2, ...movies3, ...movies4].map((movie) => ({
+    movieId: movie.id.toString(),
+  }));
+}
+
+export async function generateMetadata({ params: { movieId } }) {
+  const movieDetails = await getMovieDetail(movieId);
+  return {
+    title: `${movieDetails.title} | Netflix`,
+    description: `This is the page of ${movieDetails.title}`,
+  };
+}

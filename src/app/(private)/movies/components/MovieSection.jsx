@@ -5,7 +5,7 @@ import { getMovies } from "@/helpers/movieFunctions";
 const MovieSection = async ({ title, type }) => {
   const movies = await getMovies(type);
   return (
-    <div className="mb-4">
+    <div className="mb-4 px-4">
       <p className="text-white text-md lg:text-2xl font-semibold mb-4">
         {title}
       </p>
